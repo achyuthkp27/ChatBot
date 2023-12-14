@@ -59,14 +59,18 @@ def log_low_confidence_input(inp, confidence, predicted):
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     log_entry = f"Time: {timestamp}, Input: {inp}, Confidence: {confidence:.4f}, Predicted: {predicted}\n"
     file_name = os.path.join(folder_name, "low_confidence_inputs.log")
+
     if not os.path.exists(folder_name):
         os.makedirs(folder_name)
+
+    logging.basicConfig(filename=file_name, level=logging.INFO)
+    logger = logging.getLogger()
+
     try:
-        with open(file_name, 'a') as log:
-            log.write(log_entry)
-    except Exception:
-        with open(file_name, 'w') as log:
-            log.write(log_entry)
+        logger.info(log_entry)
+    except Exception as e:
+        logger.error(f"Error logging low confidence input: {e}")
+
 
 
 def databaseFunc(ip):

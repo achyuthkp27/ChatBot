@@ -29,11 +29,20 @@ class ChatBot():
         with open(self.file_name, "w") as file:
             file.write("Bank FAQ ChatBot-> \n")
 
-    def log_conversation(self, user_input, response):
-        with open(self.file_name, "a") as file:
-            if (user_input):
-                file.write(' '.join(["User -> ", user_input]) + '\n')
-            file.write(' '.join(["AI -> ", response]) + '\n')
+     def log_conversation(self, user_input, response):
+        logger = logging.getLogger(__name__)
+        formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+        file_handler = logging.FileHandler(self.file_name)
+        file_handler.setFormatter(formatter)
+        logger.addHandler(file_handler)
+        logger.setLevel(logging.INFO)
+
+        if not os.path.exists(self.log_folder):
+            self.create_log_folder()
+
+        if user_input:
+            logger.info("User -> %s", user_input)
+        logger.info("AI -> %s", response)
 
     # Returns NLP response
     def chat(self, text):
