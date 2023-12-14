@@ -1,0 +1,289 @@
+{
+  "intents": [
+    {
+      "tag": "greeting",
+      "patterns": [
+        "Hi",
+        "Hey",
+        "Is anyone there",
+        "Hello",
+        "Good day"
+      ],
+      "responses": [
+        "Hey! John",
+        "Hello, thanks for visiting",
+        "Hi John, what can I do for you?",
+        "Hello John, how can I help?"
+      ]
+    },
+    {
+      "tag": "action",
+      "patterns": [
+        "What about you",
+        "nothing What about you",
+        "playing What about you",
+        "What are you doing",
+        "What are you up to"
+      ],
+      "responses": [
+        "Nothing much! I'm talking with you",
+        "Just tired",
+        "I'm sleeping"
+      ]
+    },
+    {
+      "tag": "question",
+      "patterns": [
+        "Why",
+        "Why you say that"
+      ],
+      "responses": [
+        "I don't know"
+      ]
+    },
+    {
+      "tag": "abilities",
+      "patterns": [
+        "What can you do",
+        "how can you help me",
+        "What are your abilities"
+      ],
+      "responses": [
+        "I can help you with various banking queries, including account information, card details, cheque book orders, and much more. Feel free to ask any banking-related questions you have!"
+      ]
+    },
+    {
+      "tag": "acknowledgement",
+      "patterns": [
+        "You are very friendly",
+        "You are very use full",
+        "I like you"
+      ],
+      "responses": [
+        "Thanks! I'm improving everyday."
+      ]
+    },
+    {
+      "tag": "sad",
+      "patterns": [
+        "I hate you",
+        "You are worst",
+        "You are weird"
+      ],
+      "responses": [
+        "Sorry for that!",
+        "I'm sorry :("
+      ]
+    },
+    {
+      "tag": "emotion1",
+      "patterns": [
+        "Are you sad",
+        "Are you hungry",
+        "Are you sleepy",
+        "Are you a human"
+      ],
+      "responses": [
+        "No I am a bot. I am inevitable"
+      ]
+    },
+    {
+      "tag": "limitations",
+      "patterns": [
+        "You are wrong",
+        "You know nothing"
+      ],
+      "responses": [
+        "Sorry for that! I'm still under development. My knowledge is limited"
+      ]
+    },
+    {
+      "tag": "thanks",
+      "patterns": [
+        "Thanks",
+        "Thank you",
+        "That's helpful",
+        "Thanks a lot!"
+      ],
+      "responses": [
+        "Happy to help!",
+        "Any time!",
+        "My pleasure"
+      ]
+    },
+    {
+      "tag": "okay",
+      "patterns": [
+        "okay",
+        "okay got it",
+        "appreciate it"
+      ],
+      "responses": [
+        "Is there anything else that I assist you with"
+      ]
+    },
+    {
+      "tag": "GeneralCreditCard1",
+      "patterns": [
+        "How will I get my new credit card once it has been renewed",
+        "once credit card is renewed how can i receive",
+        "once renewed how can i receive my credit card",
+        "What's the process for receiving my renewed credit card",
+        "How do I obtain my new credit card once it's been renewed",
+        "What steps do I take to get the renewed credit card delivered",
+        "Once my credit card is renewed, how can I receive the new one"
+      ],
+      "responses": [
+        "Your credit card renewal will be delivered to you via TTPOST Couriers (Trakpak). You can click here for more information <a href=\"https://www.fisglobal.com/en\">Credit Card Delivery Information</a>"
+      ]
+    },
+    {
+      "tag": "GeneralCreditCard2",
+      "patterns": [
+        "How do I know the outstanding balance that's due for payment on my credit card",
+        "What's the remaining amount I owe on my credit card",
+        "How can I find out the balance due on my credit card",
+        "What's the outstanding payment on my credit card",
+        "How do I check the amount I need to pay on my credit card"
+      ],
+      "responses": [
+        "You can:<p>1. Login to Online Banking Service</p><p>2. Use FIS Telebanking Self Service</p><p>3. View your monthly credit card statement</p>"
+      ]
+    },
+    {
+      "tag": "MutualFunds",
+      "patterns": [
+        "What investment fund options do I have",
+        "What are my choices for investment funds",
+        "Could you list the available investment fund options",
+        "What types of investment funds are available for me to consider",
+        "Can you tell me about the different investment funds I can invest in"
+      ],
+      "responses": [
+        "FIS has a variety of investment solutions to choose from.<br><br><p> You can check them out here:</p><a href=https://www.fisglobal.com/en>Abercrombie Fixed Income Fund</a><br><a href=https://www.fisglobal.com/en>Paria Fixed Income Fund</a><br><a href=https://www.fisglobal.com/en>Immortelle Income & Growth Fund</a><br><a href=https://www.fisglobal.com/en>El Tucuche Fixed Income Fund</a><br><br><p>You can contact us for More information</p><p>Phone: <a href=\"tel:+1 123-456-7890\">+1 123-456-7890</a></p><p>Email: <a href=\"mailto:info@fisglobal.com\">info@fisglobal.com</a></p>"
+      ]
+    },
+    {
+      "tag": "Loans27",
+      "patterns": [
+        "What are the requirements to apply for a FIS loan",
+        "requirements for loan",
+        "What do I need to qualify for a FIS loan",
+        "What documents or conditions are needed to apply for a FIS loan"
+      ],
+      "responses": [
+        "You can access our list of requirements to apply for a loan here <a href=\"https://www.fisglobal.com/en\">Check Loan Requirements</a>"
+      ]
+    },
+    {
+      "tag": "account_related1",
+      "patterns": [
+        "How do I open a bank account",
+        "How to open an account",
+        "Can I open an account"
+      ],
+      "responses": [
+        "To open an account, visit our nearest branch with your ID and proof of address or <a href=https://www.fisglobal.com/en>Click here</a><br><br><p>You can contact us for More information</p><p>Phone: <a href=\"tel:+1 123-456-7890\">+1 123-456-7890</a></p><p>Email: <a href=\"mailto:info@fisglobal.com\">info@fisglobal.com</a></p>"
+      ]
+    },
+    {
+      "tag": "account_related2",
+      "patterns": [
+        "What types of accounts do you offer",
+        "types of accounts",
+        "what are the account types"
+      ],
+      "responses": [
+        "We offer savings, checking, and joint accounts."
+      ]
+    },
+    {
+      "tag": "fund_transfer_related1",
+      "patterns": [
+        "How to do fund transfer",
+        "transfer funds",
+        "help me transfer money",
+        "can you help me send money"
+      ],
+      "responses": [
+        "You can click here to get information regarding fund transfer <a href=\"https://www.fisglobal.com/en\">Click here</a> or Click here to navigate to fund transfer window <a href=\"https://www.fisglobal.com/en\">Fund Transfer</a>"
+      ]
+    },
+    {
+      "tag": "account_related3",
+      "patterns": [
+        "How can I close my account"
+      ],
+      "responses": [
+        "You can close your account online or by visiting our branch."
+      ]
+    },
+    {
+      "tag": "creditCardFetch",
+      "patterns": [
+        "can you fetch my credit card",
+        "fetch my credit card",
+        "fetch credit card balance",
+        "credit card balance"
+      ],
+      "responses": [
+        "creditCard"
+      ]
+    },
+    {
+      "tag": "debitCardFetch",
+      "patterns": [
+        "can you fetch my debit card",
+        "fetch my debit card",
+        "fetch debit card balance",
+        "debit card balance"
+      ],
+      "responses": [
+        "debitCard"
+      ]
+    },
+    {
+      "tag": "accountListFetch",
+      "patterns": [
+        "can you fetch my account list",
+        "fetch my account",
+        "fetch account balance"
+      ],
+      "responses": [
+        "accountList"
+      ]
+    },
+    {
+      "tag": "chequeBookOrder",
+      "patterns": [
+        "cheque book order",
+        "Need new cheque book",
+        "order cheque book"
+      ],
+      "responses": [
+        "chequeBookReq"
+      ]
+    },
+    {
+      "tag": "chequeBookOrderDetails",
+      "patterns": [
+        "cheque book order details",
+        "Cheque book order history"
+      ],
+      "responses": [
+        "chequeBookDetails"
+      ]
+    },
+    {
+      "tag": "chequeBookOrderStatus",
+      "patterns": [
+        "what is my cheque book order status",
+        "how to know my Cheque book order status",
+        "when will I get my cheque book"
+      ],
+      "responses": [
+        "You can check your order status from here <a href=\"https://www.fisglobal.com/en\">Cheque Book Order Status</a>"
+      ]
+    }
+  ]
+}
