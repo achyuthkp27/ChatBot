@@ -1,16 +1,9 @@
-import random
 import time
 
 import psycopg2
 
 from config import config
 
-main_account = {
-                "account_type": "Savings",
-                "account_number": "259944160429",
-                "account_balance": "TTD. 435.00",
-                "account_nickname": "Hira"
-            }
 
 def mask_account_number(account_number):
     masked = ''.join(['*' if char.isdigit() else char for char in account_number[:-4]]) + account_number[-4:]
@@ -30,12 +23,17 @@ def filter_accounts(ip, accounts):
     # Check if the query contains words related to account types
     potential_account_types = [word for word in query if
                                any(word.lower() in acc["account_type"].lower() for acc in accounts)]
+
+    # Check if the query contains the keyword "main"
+    contains_main = 'main' in query
+
     # Filter accounts based on provided information
     filtered_accounts = []
     for acc in accounts:
         if (any(num in acc["account_number"] for num in potential_numbers)
                 or any(nickname.lower() in acc["account_nickname"].lower() for nickname in potential_nicknames)
-                or any(acc_type.lower() in acc["account_type"].lower() for acc_type in potential_account_types)):
+                or any(acc_type.lower() in acc["account_type"].lower() for acc_type in potential_account_types)
+                or (contains_main and acc.get("isMainAccount"))):
             filtered_accounts.append(acc)
     masked_accounts = [
         {**acc, "account_number": mask_account_number(acc["account_number"])}
@@ -54,17 +52,19 @@ def AccountListConnect(ip: str):
         connection = psycopg2.connect(**params)
         cursor = connection.cursor()
 
-        select_query: str = "select account_type,account_number,balance,nick_name from chatbot.account_list where party_id='1058'"
+        select_query: str = "select account_type,account_number,balance,nick_name,main_acct from chatbot.account_list where party_id='1058'"
         cursor.execute(select_query)
         records = cursor.fetchall()
         print(records)
         accounts = []
         for row in records:
+            is_main = row[4].lower() == "true"
             account = {
                 "account_type": row[0],
                 "account_number": row[1],
                 "account_balance": row[2],
-                "account_nickname": row[3]
+                "account_nickname": row[3],
+                "isMainAccount": is_main
             }
             accounts.append(account)
         time.sleep(1)

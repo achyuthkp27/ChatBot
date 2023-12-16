@@ -221,10 +221,9 @@
     {
       "tag": "creditCardFetch",
       "patterns": [
-        "can you fetch my credit card",
-        "fetch my credit card",
-        "fetch credit card balance",
-        "credit card balance"
+        "can you show me my credit card",
+        "credit card balance",
+        "provide me my credit cards and available balance"
       ],
       "responses": [
         "creditCard"
@@ -233,10 +232,9 @@
     {
       "tag": "debitCardFetch",
       "patterns": [
-        "can you fetch my debit card",
-        "fetch my debit card",
-        "fetch debit card balance",
-        "debit card balance"
+        "can you show me my debit card",
+        "debit card balance",
+        "provide me my debit cards and available balance"
       ],
       "responses": [
         "debitCard"
@@ -247,7 +245,9 @@
       "patterns": [
         "can you fetch my account list",
         "fetch my account",
-        "fetch account balance"
+        "fetch account balance",
+        "can you show me my account balance of",
+        "show me my account balance"
       ],
       "responses": [
         "accountList"

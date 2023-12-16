@@ -1,3 +1,4 @@
+import logging
 import os
 from datetime import datetime
 
@@ -29,8 +30,8 @@ class ChatBot():
         with open(self.file_name, "w") as file:
             file.write("Bank FAQ ChatBot-> \n")
 
-     def log_conversation(self, user_input, response):
-        logger = logging.getLogger(__name__)
+    def log_conversation(self, user_input, response):
+        logger = logging.getLogger()
         formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
         file_handler = logging.FileHandler(self.file_name)
         file_handler.setFormatter(formatter)
@@ -39,16 +40,13 @@ class ChatBot():
 
         if not os.path.exists(self.log_folder):
             self.create_log_folder()
-
-        if user_input:
-            logger.info("User -> %s", user_input)
-        logger.info("AI -> %s", response)
+        logger.info(" %s <---> %s", user_input, response)
 
     # Returns NLP response
     def chat(self, text):
-        chat = BankFaqChatBot(text)
-        log_conversation(self,text,chat)
-        return chat
+        chatResp = BankFaqChatBot(text)
+        self.log_conversation(text, chatResp)
+        return chatResp
 
 
 def start_chat(user_input):
@@ -67,7 +65,11 @@ app.static_folder = 'static'
 
 @app.route("/")
 def home():
-    return render_template("index.html")
+    try:
+        return render_template("index.html")
+    except Exception as e:
+        print(str(e))
+        return jsonify({"error": np.random.choice(error_response)}), 500
 
 
 @app.route("/get")
@@ -75,8 +77,9 @@ def get_bot_response():
     try:
         userText = request.args.get('msg')
         return start_chat(userText)
-    except ValueError:
-        return np.random.choice(error_response)
+    except Exception as e:
+        print(str(e))
+        return jsonify({"error": np.random.choice(error_response)}), 500
 
 
 @app.route("/test", methods=['GET'])
@@ -85,18 +88,20 @@ def test():
         if request.method == 'GET':
             return jsonify({"response": "Get Request Called"})
     except Exception as e:
-        return jsonify({"error": str(e)}), 500        
+        print(str(e))
+        return jsonify({"error": np.random.choice(error_response)}), 500
 
 
 @app.route("/testBotRespParam/<txt>", methods=['POST', 'GET'])
 def testBotRespParam(txt):
     try:
         return jsonify({"response": start_chat(txt)})
-    except ValueError:
-        return np.random.choice(error_response)
+    except Exception as e:
+        print(str(e))
+        return jsonify({"error": np.random.choice(error_response)}), 500
 
 
-@app.route("/testBotResp", methods=['POST'])
+@app.route("/fetchBotResp", methods=['POST'])
 def testBotResp():
     try:
         if request.data:
@@ -104,8 +109,9 @@ def testBotResp():
             return jsonify({"response": start_chat(user_ip["query"])})
         else:
             return jsonify({"response": "No Request Data Found"})
-    except ValueError:  
-        return np.random.choice(error_response)
+    except Exception as e:
+        print(str(e))
+        return jsonify({"error": np.random.choice(error_response)}), 500
 
 
 if __name__ == "__main__":

@@ -1,4 +1,5 @@
 import json
+import logging
 import os
 import random
 import secrets
@@ -7,7 +8,7 @@ from datetime import datetime
 import torch
 
 from nlp_pipeline.databaseOp.accountList import AccountListConnect
-from nlp_pipeline.databaseOp.chequeBookReq import ChequeBookReq, ChequeBookDetails,ClearInputs
+from nlp_pipeline.databaseOp.chequeBookReq import cheque_book_request, cheque_book_details, ClearInputs
 from nlp_pipeline.databaseOp.creditCardList import CreditCardConnect
 from nlp_pipeline.databaseOp.debitCardList import DebitCardConnect
 from nlp_pipeline.model import NeuralNetwork
@@ -42,14 +43,6 @@ model = NeuralNetwork(input_size, hidden_size, num_classes).to(device)
 model.load_state_dict(model_state)
 model.eval()
 
-dbFunctionalities = ["creditCard", "debitCard", "accountList", "accountStatement", "chequeBookReq", "fundTransfer",
-                     "chequeBookDetails"]
-dbHashMap = {
-    "creditCard": CreditCardConnect(),
-    "debitCard": DebitCardConnect(),
-    "accountList": AccountListConnect()
-}
-
 chequeBookReq: bool = False
 
 
@@ -72,11 +65,6 @@ def log_low_confidence_input(inp, confidence, predicted):
         logger.error(f"Error logging low confidence input: {e}")
 
 
-
-def databaseFunc(ip):
-    return dbHashMap[ip] if ip in dbFunctionalities else None
-
-
 def BankFaqChatBot(inp):
     global chequeBookReq
     if chequeBookReq:
@@ -85,7 +73,7 @@ def BankFaqChatBot(inp):
             ClearInputs()
             return "Cheque Book Request Aborted"
 
-        cheqResp = ChequeBookReq(inp)
+        cheqResp = cheque_book_request(inp)
         if cheqResp == "Completed" or cheqResp == "Cheque Book Order Already Exist for this Account Number":
             chequeBookReq = False
             if cheqResp == "Completed":
@@ -112,11 +100,18 @@ def BankFaqChatBot(inp):
                 bot_resp: str = random.choice(intent['responses'])
                 if bot_resp == "chequeBookReq":
                     chequeBookReq = True
-                    cheqResp = ChequeBookReq(None)
+                    cheqResp = cheque_book_request(None)
                     return cheqResp
                 if bot_resp == "chequeBookDetails":
-                    return ChequeBookDetails()
-                return dbHashMap[bot_resp] if bot_resp in dbFunctionalities else bot_resp
+                    return cheque_book_details()
+                if bot_resp == "creditCard":
+                    return CreditCardConnect()
+                if bot_resp == "debitCard":
+                    return DebitCardConnect()
+                if bot_resp == "accountList":
+                    return AccountListConnect(inp)
+
+                return bot_resp
         return "Sorry I didn't understand! I'm still under development. My knowledge is limited"
 
     else:

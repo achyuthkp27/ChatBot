@@ -1,3 +1,5 @@
+import time
+
 import psycopg2
 
 from config import config
@@ -17,9 +19,9 @@ def DebitCardConnect():
         records = cursor.fetchone()
         maskedNum = "**** **** **** " + records[1][-4:]
         print(records)
-        return cssStyle.format(maskedNum, records[2], records[3], records[0])
+        time.sleep(1)
         cursor.close()
-        return cache_records
+        return cssStyle.format(maskedNum, records[2], records[3], records[0])
     except(Exception, psycopg2.DatabaseError) as error:
         print(f'Error during database connection: {error}')
     finally:

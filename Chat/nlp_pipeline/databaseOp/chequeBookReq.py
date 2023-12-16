@@ -1,3 +1,5 @@
+import time
+
 import psycopg2
 
 from config import config
@@ -110,6 +112,7 @@ def check_cheque_book(ip):
         select_query: str = "select party_id from chatbot.cheque_order_details where party_id=%s and account_number=%s"
         cursor.execute(select_query, ("1058", ip))
         records = cursor.fetchone()
+        time.sleep(1)
         cursor.close()
         return len(records) != 0
     except(Exception, psycopg2.DatabaseError) as error:
@@ -132,9 +135,10 @@ def cheque_book_connect():
         delivery_option = delivery_option_map.get(user_data['delivery_options'].lower(), 'Delivery to Address')
         cheque_leave = cheque_leave_map.get(user_data['chequebook_size'], 'Invalid Size')
         cursor.execute(insert_query,
-                       ("1058", user_data['account_number'], deliveryOption,
-                        chequeLeave))
+                       ("1058", user_data['account_number'], delivery_option,
+                        cheque_leave))
         connection.commit()
+        time.sleep(1)
         cursor.close()
     except(Exception, psycopg2.DatabaseError) as error:
         print(f'Error during database connection: {error}')
