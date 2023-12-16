@@ -148,3 +148,31 @@ def databaseFunc(ip):
                     return ChequeBookDetails()
                 return dbHashMap[bot_resp] if bot_resp in dbFunctionalities else bot_resp
         return "Sorry I didn't understand! I'm still under development. My knowledge is limited"
+
+
+
+
+
+
+
+
+
+
+if prob.item() > 0.80:
+    for intent in intents['intents']:
+        if predicted_tag == intent["tag"]:
+            bot_response = random.choice(intent['responses'])
+            actions = {
+                "chequeBookReq": (True, cheque_book_request(None)),
+                "chequeBookDetails": cheque_book_details(),
+                "creditCard": CreditCardConnect(),
+                "debitCard": DebitCardConnect(),
+                "accountList": AccountListConnect(input_text),
+            }
+            action = actions.get(bot_response, bot_response)
+            if isinstance(action, tuple):
+                cheque_book_request_status, response = action
+                return response
+            return action
+
+    return "Sorry I didn't understand! I'm still under development. My knowledge is limited"
