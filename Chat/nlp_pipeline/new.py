@@ -304,3 +304,139 @@ def bank_faq_chat_bot(input_text):
     prob = probs[0][predicted.item()]
 
     return handle_high_confidence(prob.item())
+----------------------------------------------------------------
+import json
+import logging
+import os
+import random
+import secrets
+from datetime import datetime
+from typing import Any, Callable, Optional
+
+import torch
+
+from nlp_pipeline.databaseOp.accountList import AccountListConnect
+from nlp_pipeline.databaseOp.chequeBookReq import (
+    cheque_book_request,
+    cheque_book_details,
+    ClearInputs,
+)
+from nlp_pipeline.databaseOp.creditCardList import CreditCardConnect
+from nlp_pipeline.databaseOp.debitCardList import DebitCardConnect
+from nlp_pipeline.model import NeuralNetwork
+from nlp_pipeline.nltk_lib import bag_of_words, tokenizer
+
+Device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+ErrorMessages = [
+    "I'm not sure I understand. Can you rephrase that?",
+    "Could you provide more details? I'm still learning!",
+    "Hmm, I'm having trouble understanding. Can you try again?",
+    "Sorry, I didn't catch that. Could you say it differently?",
+    "Sorry I didn't understand! I'm still under development. My knowledge is limited",
+]
+
+try:
+    with open('./nlp_pipeline/training data/intents.json', 'r') as json_data:
+        intents_data = json.load(json_data)
+
+    FILE_PATH = "./nlp_pipeline/data.pth"
+    saved_data = torch.load(FILE_PATH)
+except FileNotFoundError:
+    print("Required files not found. Please check the file paths.")
+    exit(1)
+
+InputSize = saved_data["input_size"]
+HiddenSize = saved_data["hidden_size"]
+NumClasses = saved_data["num_classes"]
+AllWords = saved_data['all_words']
+Tags = saved_data['tags']
+ModelState = saved_data["model_state"]
+
+model = NeuralNetwork(InputSize, HiddenSize, NumClasses).to(Device)
+model.load_state_dict(ModelState)
+model.eval()
+
+ChequeRequestStatus = False
+PredictedTag: Optional[str] = None
+
+LogFilePath = os.path.join("unknown_input_log", "low_confidence_inputs.log")
+os.makedirs("unknown_input_log", exist_ok=True)
+
+logging.basicConfig(filename=LogFilePath, level=logging.INFO)
+logger = logging.getLogger()
+
+
+def log_low_confidence_input(input_text: str, confidence: float, predicted_response: str) -> None:
+    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    log_entry = (
+        f"Time: {timestamp}, Input: {input_text}, Confidence: {confidence:.4f}, Predicted: {predicted_response}\n"
+    )
+
+    try:
+        logger.info(log_entry)
+    except Exception as e:
+        logger.error(f"Error logging low confidence input: {e}")
+
+
+def process_cheque_request() -> str:
+    global ChequeRequestStatus
+    ChequeRequestStatus = True
+    return cheque_book_request(None)
+
+
+def select_action(bot_response: str) -> Callable[[], Any]:
+    actions = {
+        "chequeBookReq": process_cheque_request,
+        "chequeBookDetails": cheque_book_details,
+        "creditCard": CreditCardConnect,
+        "debitCard": DebitCardConnect,
+        "accountList": lambda: AccountListConnect(input_text),
+    }
+    return actions.get(bot_response, lambda: "Sorry, I didn't understand! I'm still under development. My knowledge is limited.")
+
+
+def handle_high_confidence(probability: float) -> str:
+    global PredictedTag
+    if probability > 0.80:
+        matched_intent = next((intent for intent in intents_data['intents'] if PredictedTag == intent["tag"]), None)
+        if matched_intent:
+            bot_response = random.choice(matched_intent['responses'])
+            action = select_action(bot_response)
+            if callable(action):
+                return action()
+            return action
+
+    log_low_confidence_input(input_text, prob.item(), random.choice(matched_intent['responses']))
+    return random.choice(ErrorMessages)
+
+
+def bank_faq_chat_bot(input_text: str) -> str:
+    global ChequeRequestStatus, PredictedTag
+
+    if ChequeRequestStatus:
+        if input_text.lower() == "abort":
+            ChequeRequestStatus = False
+            ClearInputs()
+            return "Cheque Book Request Aborted"
+
+        cheque_response = cheque_book_request(input_text)
+        if cheque_response in ["Completed", "Cheque Book Order Already Exist for this Account Number"]:
+            ChequeRequestStatus = False
+            if cheque_response == "Completed":
+                reference_number = secrets.randbelow(10 ** 9) + 10 ** 9
+                return f"Cheque Book Ordered Successfully.<p> Your order reference Number is {reference_number}</p>"
+        return cheque_response
+
+    sentence = tokenizer(input_text)
+    data_input = bag_of_words(sentence, AllWords)
+    data_input = data_input.reshape(1, data_input.shape[0])
+    data_input = torch.from_numpy(data_input).to(Device)
+
+    output = model(data_input)
+    _, predicted = torch.max(output, dim=1)
+    PredictedTag = Tags[predicted.item()]
+
+    probs = torch.softmax(output, dim=1)
+    prob = probs[0][predicted.item()]
+
+    return handle_high_confidence(prob.item())
